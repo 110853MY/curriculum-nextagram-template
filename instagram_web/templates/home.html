@@ -9,5 +9,8 @@ Homepage
 
 {% block content %}
 <h1>Homepage</h1>
+<hr>
 <a href="{{ url_for('users.new') }}">SignUp</a>
+<br>
+<a href="{{ url_for('sessions.new') }}">Login</a>
 {% endblock %}
