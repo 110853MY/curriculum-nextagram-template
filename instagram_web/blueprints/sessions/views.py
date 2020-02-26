@@ -14,16 +14,23 @@ def new():
 
 @sessions_blueprint.route('/', methods=['POST'])
 def login():
-    password_to_check = request.form['password']
-    hashed_password = User.password
-    result = check_password_hash(hashed_password, password_to_check)
 
+    password_to_check = request.form.get('password')
     username = request.form.get('username')
 
+    user = User.get_or_none(User.username == username)
+    hashed_password = user.password
+
+    if not user:
+        flash("We don't seem to have you in our system. Please doublecheck your name.")
+
+    if not check_password_hash(hashed_password, password_to_check):
+        flash("That password is incorrect")
+
     try:
-        if username == 'username' and result == 'password':
-            flash('Login Successfull', 'success')
-            return redirect(url_for('home'))
+        session["user_id"] = user.id
+        flash('Login Successfull', 'success')
+        return redirect(url_for('home'))
 
     except:
         flash('Login Failed', 'danger')
