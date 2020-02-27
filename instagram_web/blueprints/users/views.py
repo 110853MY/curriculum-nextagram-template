@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from models.user import User
+from flask_login import LoginManager, UserMixin, current_user, login_user, login_required, logout_user
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -25,6 +26,8 @@ def create():
 
     try:
         signup.save()
+        user = User.get_or_none(User.username == username)
+        login_user(user)
         flash('User successfully signed up', 'success')
         return redirect(url_for('home'))
 
