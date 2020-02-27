@@ -7,7 +7,8 @@ from flask_assets import Environment, Bundle
 from .util.assets import bundles
 from flask_login import LoginManager
 from models.user import User
-
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 assets = Environment(app)
 assets.register(bundles)
@@ -17,6 +18,8 @@ app.register_blueprint(sessions_blueprint, url_prefix="/sessions")
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+# sentry_sdk.init('YOUR_DSN_HERE', integrations=[FlaskIntegration()])
 
 
 @app.errorhandler(500)

@@ -38,7 +38,31 @@ def create():
 
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
-    pass
+    user = User.get_or_none(User.username == username)
+
+    if not user:
+        flash('No user found with provided ID', 'warning')
+        return redirect(url_for('users.show'))
+
+    return render_template('users/edit.html', user=user)
+
+
+@users_blueprint.route('/<username>/', methods=["POST"])
+def edit_username(username):
+
+    user = User.get_or_none(User.username == username)
+
+    new_username = request.form.get('username')
+    user.username = new_username
+
+    try:
+        user.save()
+        flash('Username updated successful', 'success')
+        return redirect(url_for('home', username=user.username))
+
+    except:
+        flash('Unable to update username', 'warning')
+        return redirect(url_for('home', username=user.username))
 
 
 @users_blueprint.route('/', methods=["GET"])
