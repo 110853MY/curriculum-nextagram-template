@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from models.user import User
 from flask_login import LoginManager, UserMixin, current_user, login_user, login_required, logout_user
+# from re
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -42,13 +43,13 @@ def show(username):
     user = User.get_or_none(User.username == username)
 
     if not user:
-        flash('No user found with provided ID', 'warning')
+        flash('No user found with provided Username', 'warning')
         return redirect(url_for('users.show'))
 
     return render_template('users/edit.html', user=user)
 
 
-@users_blueprint.route('/<username>/', methods=["POST"])
+@users_blueprint.route('/<username>/edit', methods=["POST"])
 @login_required
 def edit_username(username):
 
@@ -59,12 +60,39 @@ def edit_username(username):
 
     try:
         user.save()
-        flash('Username updated successful', 'success')
+        flash('Username update successful', 'success')
         return redirect(url_for('home', username=user.username))
 
     except:
         flash('Unable to update username', 'warning')
         return redirect(url_for('home', username=user.username))
+
+
+@users_blueprint.route('/<username>/edit', methods=["POST"])
+@login_required
+def edit_email(email):
+    if not str(current_user.id) == id:
+        flash('Wrong account')
+        redirect(url_for('users.show'))
+
+    user = User.get_or_none(User.email == email)
+
+    new_email = request.form.get('email')
+    user.email = new_email
+
+    try:
+        user.save()
+        flash('Email update successful', 'success')
+        return redirect(url_for('home', username=user.username))
+
+    except:
+        flash('Unable to update email', 'warning')
+        return redirect(url_for('home', username=user.username))
+
+
+@users_blueprint.route('/<username>', methods=['POST'])
+def update_username(username):
+    pass
 
 
 @users_blueprint.route('/', methods=["GET"])
