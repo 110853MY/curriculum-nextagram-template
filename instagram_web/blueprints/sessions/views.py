@@ -23,24 +23,20 @@ def loggin():
     username = request.form.get('username')
 
     user = User.get_or_none(User.username == username)
-    hashed_password = user.password
 
     if not user:
         flash("We don't seem to have you in our system. Please doublecheck your name.")
+        return redirect(url_for('sessions.new'))
+
+    hashed_password = user.password
 
     if not check_password_hash(hashed_password, password_to_check):
         flash("That password is incorrect")
+        return redirect(url_for('sessions.new'))
 
     login_user(user)
-
-    try:
-        # session["user_id"] = user.id
-        flash('Login Successful', 'success')
-        return redirect(url_for('home'))
-
-    except:
-        flash('Login Failed', 'danger')
-        return redirect(url_for('sessions.new'))
+    flash('Login Successful', 'success')
+    return redirect(url_for('home'))
 
 
 @sessions_blueprint.route("/settings")
