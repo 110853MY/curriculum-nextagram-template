@@ -32,8 +32,8 @@
 
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     {% if not current_user.is_authenticated %}
-                    <a class="dropdown-item" href="{{ url_for('users.new') }}">SignUp</a>
                     <a class="dropdown-item" href="{{ url_for('sessions.new') }}">Login</a>
+                    <a class="dropdown-item" href="{{ url_for('users.new') }}">SignUp</a>
                     {% endif %}
 
                     {% if current_user.is_authenticated %}
