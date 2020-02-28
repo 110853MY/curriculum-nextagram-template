@@ -29,7 +29,7 @@ def create():
         user = User.get_or_none(User.username == username)
         login_user(user)
         flash('User successfully signed up', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('home', username=user.username))
 
     except:
         flash('Error creating User', 'danger')
@@ -37,6 +37,7 @@ def create():
 
 
 @users_blueprint.route('/<username>', methods=["GET"])
+@login_required
 def show(username):
     user = User.get_or_none(User.username == username)
 
@@ -48,6 +49,7 @@ def show(username):
 
 
 @users_blueprint.route('/<username>/', methods=["POST"])
+@login_required
 def edit_username(username):
 
     user = User.get_or_none(User.username == username)

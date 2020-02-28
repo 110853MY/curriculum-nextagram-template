@@ -1,38 +1,21 @@
 {% extends "_layout.html" %}
 
 {% block title %}
-title
 {% endblock %}
 
 {% block header %}
-<h6>header</h6>
 {% endblock %}
 
 {% block content %}
-<hr>
-<h6>body</h6>
-<br>
-<br>
-<h1><i><b>Homepage</b></i></h1>
 {% if not current_user.is_authenticated %}
 
-<br>
-<a href="{{ url_for('sessions.new') }}">Login</a>
-<br>
-<br>
-<a href="{{ url_for('users.new') }}">SignUp</a>
+<h1>Welcome To Nextagram</h1>
 
 {% endif %}
 
 {% if current_user.is_authenticated %}
-
 <br>
-<h1>Welcome {{current_user.username}}!</h1>
-<br>
-<a href="{{ url_for('users.show', username=current_user.username) }}">Edit Username</a>
-<br>
-<a href="{{ url_for('sessions.logout') }}">Logout</a>
-
+<h1>Welcome back, {{current_user.username}}</h1>
 
 {% endif %}
 
