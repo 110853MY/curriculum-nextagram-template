@@ -1,8 +1,23 @@
 {% extends '_layout.html' %}
 {% block content %}
 
-<h1>Edit</h1>
+<h1>Edit Profile</h1>
 
+{% if user.profile_image %}
+<img scr="{{ user.profile_image_url }}" alt="profile pic">
+{% else %}
+<img scr="">
+{% endif %}
+
+<form action="{{ url_for('users.upload_file', username=current_user.username) }}" method="POST"
+    enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <br></br>
+    <input type="file" name="profile_image">
+    <br></br>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+<hr>
 <form action="{{ url_for('users.edit_username', username=current_user.username) }}" method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <div class="form-group">

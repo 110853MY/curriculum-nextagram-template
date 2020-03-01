@@ -7,6 +7,9 @@ class Config(object):
     CSRF_ENABLED = True
     SECRET_KEY = os.environ.get(
         'SECRET_KEY') or os.urandom(32)
+    S3_BUCKET = os.getenv("S3_BUCKET")
+    S3_KEY = os.getenv("S3_KEY")
+    S3_SECRET = os.getenv("S3_SECRET_ACCESS_KEY")
 
 
 class ProductionConfig(Config):
@@ -24,6 +27,7 @@ class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
     ASSETS_DEBUG = False
+
 
 class TestingConfig(Config):
     TESTING = True
