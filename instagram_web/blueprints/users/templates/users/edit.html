@@ -1,22 +1,25 @@
 {% extends '_layout.html' %}
 {% block content %}
 
-<h1>Edit Profile</h1>
+<h1>User Profile</h1>
 
 {% if user.profile_image %}
-<img scr="{{ user.profile_image_url }}" alt="profile pic">
+<img src="{{ user.profile_image_url }}" alt="profile pic">
 {% else %}
-<img scr="">
+<img src="{{ user.profile_image_url }}" alt="profile pic">
 {% endif %}
 
-<form action="{{ url_for('users.upload_file', username=current_user.username) }}" method="POST"
-    enctype="multipart/form-data">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <br></br>
-    <input type="file" name="profile_image">
-    <br></br>
-    <button type="submit" class="btn btn-primary">Upload</button>
-</form>
+{% if image.user_image %}
+
+{% for user_image in user.user_image_url %}
+
+<img src="{{ user_image }}" alt="user's image">
+{% else %}
+<img src="{{ user_image }}" alt="user's image">
+
+{% endfor %}
+
+{% endif %}
 <hr>
 <form action="{{ url_for('users.edit_username', username=current_user.username) }}" method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
@@ -25,10 +28,10 @@
         <input type='text' name='username' class="form-control" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Update Username</button>
 </form>
 <hr>
-<form action="{{ url_for('users.edit_email', username=current_user.username) }}" method="post">
+<!-- <form action="{{ url_for('users.edit_email', username=current_user.username) }}" method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <div class="form-group">
         <label>{{user.email}}</label>
@@ -36,9 +39,21 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+</form> -->
 
-<hr>
 <a href="{{ url_for('home', username=user.username) }}">Homepage</a>
-
+<hr>
+<form action="{{ url_for('users.upload_profile', username=current_user.username) }}" method="POST"
+    enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <input type="file" name="profile_image">
+    <button type="submit" class="btn btn-primary">Upload Profile Image</button>
+</form>
+<hr>
+<form action="{{ url_for('users.upload_image', username=current_user.username) }}" method="POST"
+    enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <input type="file" name="user_image">
+    <button type="submit" class="btn btn-primary">Upload User Image</button>
+</form>
 {% endblock %}

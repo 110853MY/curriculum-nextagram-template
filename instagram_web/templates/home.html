@@ -17,6 +17,18 @@
 <br>
 <h1>Welcome back, {{current_user.username}}</h1>
 
+{% if users | length > 0 %}
+{% for users in users %}
+
+
+<ul>
+    <li>
+        {{users.username}}
+    </li>
+</ul>
+{% endfor %}
+
+{% endif %}
 {% endif %}
 
 {% endblock %}

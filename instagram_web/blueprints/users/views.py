@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from models.user import User
+from models.image import Image
 from flask_login import LoginManager, UserMixin, current_user, login_user, login_required, logout_user
 from werkzeug.utils import secure_filename
 from instagram_web.util.helpers import upload_file_to_s3
@@ -32,7 +33,7 @@ def create():
         user = User.get_or_none(User.username == username)
         login_user(user)
         flash('User successfully signed up', 'success')
-        return redirect(url_for('home', username=user.username))
+        return redirect(url_for('home'))
 
     except:
         flash('Error creating User', 'danger')
@@ -42,16 +43,16 @@ def create():
 @users_blueprint.route('/<username>', methods=["GET"])
 @login_required
 def show(username):
-    user = User.get_or_none(User.username == username)
+    user = User.get_or_none(User.username == current_user.username)
 
     if not user:
         flash('No user found with provided Username', 'warning')
-        return redirect(url_for('users.show', username=user.username))
+        return redirect(url_for('users.show'))
 
     return render_template('users/edit.html', user=user)
 
 
-@users_blueprint.route('/<username>/edit', methods=["POST"])
+@users_blueprint.route('/<username>/', methods=["POST"])
 @login_required
 def edit_username(username):
 
@@ -63,21 +64,21 @@ def edit_username(username):
     try:
         user.save()
         flash('Username update successful', 'success')
-        return redirect(url_for('home', username=user.username))
+        return redirect(url_for('home'))
 
     except:
         flash('Unable to update username', 'warning')
-        return redirect(url_for('home', username=user.username))
+        return redirect(url_for('home'))
 
 
-@users_blueprint.route('/<username>/edit', methods=["POST"])
+@users_blueprint.route('/<username>/', methods=["POST"])
 @login_required
 def edit_email(email):
     # if not str(current_user.id) == id:
     #     flash('Wrong account')
     #     redirect(url_for('users.show'))
 
-    user = User.get_or_none(User.email == email)
+    user = User.get_or_none(User.email == current_user.email)
 
     new_email = request.form.get('email')
     user.email = new_email
@@ -85,22 +86,20 @@ def edit_email(email):
     try:
         user.save()
         flash('Email update successful', 'success')
-        return redirect(url_for('home', username=user.username))
+        return redirect(url_for('home'))
 
     except:
         flash('Unable to update email', 'warning')
-        return redirect(url_for('home', username=user.username))
+        return redirect(url_for('home'))
 
 
 @users_blueprint.route('/upload', methods=['POST'])
 @login_required
-def upload_file(username):
-
-    user = User.get_or_none(User.username == username)
+def upload_profile():
 
     if not "profile_image" in request.files:
         flash('No image has been provided', 'warning')
-        return redirect(url_for('users.upload_file', username=user.username))
+        return redirect(url_for('users.upload_profile'))
 
     file = request.files.get('profile_image')
 
@@ -108,30 +107,60 @@ def upload_file(username):
 
     if not upload_file_to_s3(file):
         flash('Upload Failed', 'warning')
-        return redirect(url_for('users.upload_file', username=current_user.username))
+        return redirect(url_for('users.upload_profile'))
 
-    user.profile_image = file.filenames
+    user = User.get_or_none(User.username == current_user.username)
+
+    user.profile_image = file.filename
 
     user.save()
 
     flash('Upload Successful', 'success')
-    return redirect(url_for('users.upload_file', username=user.username))
+    return redirect(url_for('users.upload_profile'))
 
+
+@users_blueprint.route('/upload', methods=['POST'])
+@login_required
+def upload_image():
+
+    if not "image_name" in request.files:
+        flash('No image has been provided', 'warning')
+        return redirect(url_for('users.upload_image'))
+
+    file = request.files.get('image_name')
+
+    file.filename = secure_filename(file.filename)
+
+    if not upload_file_to_s3(file):
+        flash('Upload Failed', 'warning')
+        return redirect(url_for('users.upload_image'))
+
+    user = User.get_or_none(User.username == current_user.username)
+
+    user.user_image = file.filename
+
+    user.save()
+
+    flash('Upload Successful', 'success')
+    return redirect(url_for('users.upload_image'))
+
+
+# @users_blueprint.route('/', methods=['GET'])
+# def user_feed():
+#     users = User.get_or_none(User.id == id)
+#     return render_template('templates/home.html', users=users)
 
 # @users_blueprint.route('/<username>', methods=['POST'])
 # def update_username(username):
 #     pass
 
-
 # @users_blueprint.route('/', methods=["GET"])
 # def index():
 #     return "USERS"
 
-
 # @users_blueprint.route('/<id>/edit', methods=['GET'])
 # def edit(id):
 #     pass
-
 
 # @users_blueprint.route('/<id>', methods=['POST'])
 # def update(id):

@@ -36,7 +36,7 @@ def loggin():
 
     login_user(user)
     flash('Login Successful', 'success')
-    return redirect(url_for('home', username=user.username))
+    return redirect(url_for('home'))
 
 
 @sessions_blueprint.route("/settings")
