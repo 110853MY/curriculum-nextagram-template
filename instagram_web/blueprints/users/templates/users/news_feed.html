@@ -1,0 +1,18 @@
+{% extends "_layout.html" %}
+{% block content %}
+
+<h1>News Feed</h1>
+
+<div>
+    <ul>
+        {% for user in user %}
+        <li>
+            <!-- <a href="users.user_image"> -->
+            {{user.username}}
+            <!-- </a> -->
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

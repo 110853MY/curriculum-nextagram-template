@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from models.user import User
+from models.image import Image
 from flask_login import LoginManager, UserMixin, current_user, login_user, login_required, logout_user
 from werkzeug.utils import secure_filename
 from instagram_web.util.helpers import upload_file_to_s3
@@ -32,7 +33,7 @@ def create():
         user = User.get_or_none(User.username == username)
         login_user(user)
         flash('User successfully signed up', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('users.show_feed'))
 
     except:
         flash('Error creating User', 'danger')
@@ -63,11 +64,11 @@ def edit_username(username):
     try:
         user.save()
         flash('Username update successful', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('users.show_feed'))
 
     except:
         flash('Unable to update username', 'warning')
-        return redirect(url_for('home'))
+        return redirect(url_for('users.show_feed'))
 
 
 @users_blueprint.route('/<username>/', methods=["POST"])
@@ -85,11 +86,11 @@ def edit_email(email):
     try:
         user.save()
         flash('Email update successful', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('users.show_feed'))
 
     except:
         flash('Unable to update email', 'warning')
-        return redirect(url_for('home'))
+        return redirect(url_for('users.show_feed'))
 
 
 @users_blueprint.route('/upload', methods=['POST'])
@@ -120,9 +121,17 @@ def upload_profile():
 
 @users_blueprint.route('/')
 @login_required
-def show_user():
+def show_feed():
     user = User.select()
-    return render_template('home.html', user=user)
+    return render_template('users/news_feed.html', user=user)
+
+
+# @users_blueprint.route('/')
+# @login_required
+# def user_image():
+#     images = Image.select()
+#     return render_template('users/user_profile.html', images=images)
+
 
 # @users_blueprint.route('/<username>', methods=['POST'])
 # def update_username(username):

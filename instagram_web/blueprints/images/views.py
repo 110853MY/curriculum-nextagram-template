@@ -44,4 +44,4 @@ def upload_image():
 @login_required
 def show_image():
     image = Image.select()
-    return render_template('home.html', image=image)
+    return render_template('users/news_feed.html', image=image)

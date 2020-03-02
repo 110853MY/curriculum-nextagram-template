@@ -1,0 +1,16 @@
+{% extends "_layout.html" %}
+{% block content %}
+
+<h1>News Feed</h1>
+
+<div>
+    <ul>
+        {% for image in current_user.images %}
+        <li>
+            <img width="100" src="{{ image.user_image_url }}" alt="pic">
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
