@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from models.user import User
-from models.image import Image
 from flask_login import LoginManager, UserMixin, current_user, login_user, login_required, logout_user
 from werkzeug.utils import secure_filename
 from instagram_web.util.helpers import upload_file_to_s3
@@ -119,36 +118,10 @@ def upload_profile():
     return redirect(url_for('users.upload_profile'))
 
 
-@users_blueprint.route('/upload', methods=['POST'])
-@login_required
-def upload_image():
-
-    if not "image_name" in request.files:
-        flash('No image has been provided', 'warning')
-        return redirect(url_for('users.upload_image'))
-
-    file = request.files.get('image_name')
-
-    file.filename = secure_filename(file.filename)
-
-    if not upload_file_to_s3(file):
-        flash('Upload Failed', 'warning')
-        return redirect(url_for('users.upload_image'))
-
-    user = User.get_or_none(User.username == current_user.username)
-
-    user.user_image = file.filename
-
-    user.save()
-
-    flash('Upload Successful', 'success')
-    return redirect(url_for('users.upload_image'))
-
-
-# @users_blueprint.route('/', methods=['GET'])
-# def user_feed():
-#     users = User.get_or_none(User.id == id)
-#     return render_template('templates/home.html', users=users)
+@users_blueprint.route('/')
+def user_feeds():
+    users = User.select()
+    return render_template('templates/home.html', users=users)
 
 # @users_blueprint.route('/<username>', methods=['POST'])
 # def update_username(username):
