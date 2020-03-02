@@ -4,10 +4,14 @@
 <h1>User Profile</h1>
 
 {% if user.profile_image %}
-<img src="{{ user.profile_image_url }}" alt="profile pic">
+<img width="100" src="{{ user.profile_image_url }}" alt="profile pic">
 {% else %}
 <img src="{{ user.profile_image_url }}" alt="profile pic">
 {% endif %}
+
+{% for image in current_user.images %}
+<img width="100" src="{{ image.user_image_url }}" alt="pic">
+{% endfor %}
 
 <hr>
 <form action="{{ url_for('users.edit_username', username=current_user.username) }}" method="post">

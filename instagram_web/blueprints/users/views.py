@@ -115,13 +115,14 @@ def upload_profile():
     user.save()
 
     flash('Upload Successful', 'success')
-    return redirect(url_for('users.upload_profile'))
+    return redirect(url_for('users.show', username=user.username))
 
 
 @users_blueprint.route('/')
-def user_feeds():
-    users = User.select()
-    return render_template('templates/home.html', users=users)
+@login_required
+def show_user():
+    user = User.select()
+    return render_template('home.html', user=user)
 
 # @users_blueprint.route('/<username>', methods=['POST'])
 # def update_username(username):

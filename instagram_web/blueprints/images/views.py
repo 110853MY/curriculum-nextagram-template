@@ -21,9 +21,8 @@ def new():
 def upload_image():
 
     if not "user_images" in request.files:
-        breakpoint()
         flash('No image has been provided', 'warning')
-        return redirect(url_for('images.upload_image'))
+        return redirect(url_for('images.new'))
 
     file = request.files.get('user_images')
 
@@ -31,11 +30,18 @@ def upload_image():
 
     if not upload_file_to_s3(file):
         flash('Upload Failed', 'warning')
-        return redirect(url_for('images.upload_image'))
+        return redirect(url_for('images.new'))
 
     image = Image(user_id=current_user.id, image_name=file.filename)
 
     image.save()
 
     flash('Upload Successful', 'success')
-    return redirect(url_for('images.upload_image'))
+    return redirect(url_for('images.new'))
+
+
+@images_blueprint.route('/')
+@login_required
+def show_image():
+    image = Image.select()
+    return render_template('home.html', image=image)
