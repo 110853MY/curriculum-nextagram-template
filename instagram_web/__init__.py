@@ -10,6 +10,7 @@ from flask_login import LoginManager
 from models.user import User
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
+from instagram_web.util.google_oauth import oauth
 
 assets = Environment(app)
 assets.register(bundles)
@@ -20,6 +21,8 @@ app.register_blueprint(images_blueprint, url_prefix="/images")
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+oauth.init_app(app)
 
 # sentry_sdk.init('YOUR_DSN_HERE', integrations=[FlaskIntegration()])
 

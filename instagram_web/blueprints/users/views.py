@@ -138,13 +138,6 @@ def show_feed():
     return render_template('users/news_feed.html', user=user, images=images)
 
 
-@users_blueprint.route('/')
-@login_required
-def user_profile():
-    images = Image.select()
-    return render_template('users/user_profile.html', images=images)
-
-
 # @users_blueprint.route('/<username>', methods=['POST'])
 # def update_username(username):
 #     pass

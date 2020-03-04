@@ -16,6 +16,8 @@ class Config(object):
 class ProductionConfig(Config):
     DEBUG = False
     ASSETS_DEBUG = False
+    client_id = os.getenv('CLIENT_ID'),
+    client_secret = os.getenv('CLIENT_SECRET'),
 
 
 class StagingConfig(Config):
@@ -28,6 +30,8 @@ class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
     ASSETS_DEBUG = False
+    client_id = os.getenv('CLIENT_ID'),
+    client_secret = os.getenv('CLIENT_SECRET'),
 
 
 class TestingConfig(Config):
