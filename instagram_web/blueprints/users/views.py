@@ -43,11 +43,22 @@ def create():
 @users_blueprint.route('/<username>', methods=["GET"])
 @login_required
 def show(username):
+    user = User.get_or_none(User.username == username)
+    if not user:
+        flash('No user found with provided Username', 'warning')
+        return redirect(url_for('users.show'))
+
+    return render_template('users/user_profile.html', user=user)
+
+
+@users_blueprint.route('/<username>/', methods=["GET"])
+@login_required
+def edit(username):
     user = User.get_or_none(User.username == current_user.username)
 
     if not user:
         flash('No user found with provided Username', 'warning')
-        return redirect(url_for('users.show'))
+        return redirect(url_for('users.edit'))
 
     return render_template('users/edit.html', user=user)
 
@@ -123,14 +134,15 @@ def upload_profile():
 @login_required
 def show_feed():
     user = User.select()
-    return render_template('users/news_feed.html', user=user)
+    images = Image.select()
+    return render_template('users/news_feed.html', user=user, images=images)
 
 
-# @users_blueprint.route('/')
-# @login_required
-# def user_image():
-#     images = Image.select()
-#     return render_template('users/user_profile.html', images=images)
+@users_blueprint.route('/')
+@login_required
+def user_profile():
+    images = Image.select()
+    return render_template('users/user_profile.html', images=images)
 
 
 # @users_blueprint.route('/<username>', methods=['POST'])

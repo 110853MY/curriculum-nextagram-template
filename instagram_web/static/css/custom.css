@@ -19,3 +19,11 @@ footer a {
   text-decoration: none;
   color: #303030;
 }
+
+.container {
+  border: black solid;
+}
+
+.user {
+  margin-bottom: 20px;
+}

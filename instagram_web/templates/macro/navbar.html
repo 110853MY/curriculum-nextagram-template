@@ -40,6 +40,8 @@
                     <!-- <div class="dropdown-divider"></div> -->
                     <a class="dropdown-item" href="{{ url_for('users.show', username=current_user.username) }}">User
                         Profile</a>
+                    <a class="dropdown-item" href="{{ url_for('users.edit', username=current_user.username) }}">Update
+                        Profile</a>
                     <a class="dropdown-item" href="{{ url_for('sessions.logout') }}">Logout</a>
                     {% endif %}
                 </div>

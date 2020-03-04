@@ -3,16 +3,25 @@
 
 <h1>News Feed</h1>
 
-<div>
-    <ul>
-        {% for user in user %}
-        <li>
-            <!-- <a href="users.user_image"> -->
-            {{user.username}}
-            <!-- </a> -->
-        </li>
-        {% endfor %}
-    </ul>
+<div class="container">
+
+    {% for user in user %}
+    {% if user.profile_image %}
+    <a href="{{ url_for('users.show', username=user.username) }}">
+        <br>
+        <img width="404.5" src="{{ user.profile_image_url }}" alt="pic" class="user">
+        {{user.username}}
+        <br>
+        <div>
+            {% for image in user.images %}
+            <img width="200" src="{{ image.user_image_url }}" alt="pic">
+            {% endfor %}
+        </div>
+    </a>
+    <hr>
+    {% endif %}
+    {% endfor %}
+
 </div>
 
 {% endblock %}
