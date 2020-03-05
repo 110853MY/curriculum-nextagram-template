@@ -44,9 +44,10 @@ def create():
 @login_required
 def show(username):
     user = User.get_or_none(User.username == username)
-    if not user:
-        flash('No user found with provided Username', 'warning')
-        return redirect(url_for('users.show'))
+
+    # if not user:
+    #     flash('No user found with provided Username', 'warning')
+    #     return redirect(url_for('users.show', username=user.username))
 
     return render_template('users/user_profile.html', user=user)
 

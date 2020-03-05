@@ -75,6 +75,6 @@ def authorize():
     user = User.get_or_none(User.email == email)
     if user:
         login_user(user)
-        return url_for('users.show_feed')
+        return redirect(url_for('users.show_feed'))
     else:
-        return url_for('home')
+        return redirect(url_for('home'))
