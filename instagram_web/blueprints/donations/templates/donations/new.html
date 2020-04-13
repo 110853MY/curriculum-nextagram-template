@@ -8,7 +8,7 @@
 <br>
 <img width=" 312" src="{{ image.user_image_url }}" alt=" pic">
 <hr>
-<form action="{{ url_for('donations.create', image_id=image.id) }}" method='POST'>
+<form id="donation-form" action="{{ url_for('donations.create', image_id=image.id) }}" method='POST'>
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <input type="hidden" name="payment_method_nonce" id="pmn-field" />
     <div>
@@ -28,8 +28,9 @@
         button.addEventListener('click', function () {
             instance.requestPaymentMethod(function (err, payload) {
                 // Submit payload.nonce to your server
-                $('pmn-field').val(payload.nonce)
-                $('donation-form').submit()
+                console.log(payload)
+                $('#pmn-field').val(payload.nonce)
+                $('#donation-form').submit()
             });
         });
     });

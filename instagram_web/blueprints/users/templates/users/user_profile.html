@@ -2,17 +2,7 @@
 {% block content %}
 
 <h1>{{user.username}}</h1>
-{% if user == current_user %}
-<p><a href="{{ url_for('users.edit') }}">Edit your profile</a></p>
-{% elif not current_user.is_following(user) %}
-<p><a href="{{ url_for('follow', username=user.username) }}">Follow</a></p>
-{% else %}
-<p><a href="{{ url_for('unfollow', username=user.username) }}">Unfollow</a></p>
-<p>Followers : {{ Followers | length }}</p>
-<p>Following : {{ Following | length }}</p>
-<hr>
 <div>
-
     {% for image in user.images %}
 
     <img width="312" src="{{ image.user_image_url }}" alt="pic" class="user">
@@ -20,6 +10,28 @@
     {% endfor %}
 
 </div>
+
+<div>
+    {% if not current_user.is_following(user) %}
+    <form action="{{ url_for('followers.create', idols_id=user.id)}}" mehtod="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="btn btn-primary">Follow</button>
+    </form>
+
+    {% else %}
+    <form action="{{ url_for('followers.delete', idols_id=user.id)}}" mehtod="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+    {% endif %}
+
+</div>
+
+<div>
+    Followers: {{user.fans | length}} / Following: {{user.idol | length }}
+</div>
+
 <hr>
 <a href="{{ url_for('users.show_feed') }}">Homepage</a>
+
 {% endblock %}

@@ -9,9 +9,9 @@
     {% if user.profile_image %}
     <a href="{{ url_for('users.show', username=user.username) }}">
         <br>
-        <img width="335" src="{{ user.profile_image_url }}" alt="pic" class="user">
-        <img width="335" src="{{ user.profile_image_url }}" alt="pic" class="user">
-        <img width="335" src="{{ user.profile_image_url }}" alt="pic" class="user">
+        <img width="302" src="{{ user.profile_image_url }}" alt="pic" class="user">
+        <img width="302" src="{{ user.profile_image_url }}" alt="pic" class="user">
+        <img width="302" src="{{ user.profile_image_url }}" alt="pic" class="user">
         <div>
             {{user.username}}
         </div>
@@ -20,7 +20,7 @@
             {% for image in user.images %}
             <a href="{{ url_for('donations.new', image_id=image.id) }}">
                 <img width="200" src="{{ image.user_image_url }}" alt="pic">
-                DONATE TO THIS PUPPY
+                DONATE
             </a>
             <small>Donations: RM{{image.total_donation}}</small>
             {% endfor %}

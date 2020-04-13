@@ -1,5 +1,6 @@
 from models.user import User
 from models.image import Image
+from models.donation import Donation
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from instagram_web.util.braintree import gateway
@@ -28,7 +29,7 @@ def new(image_id):
 @login_required
 def create(image_id):
     nonce = request.form.get('payment_method_nonce')
-    breakpoint()
+
     if not nonce:
         flash('Invalid credsit card details', 'warning')
         return redirect(url_for('users.show_feed'))
@@ -44,7 +45,7 @@ def create(image_id):
     if not amount:
         flash('No donation amount provided', 'warning')
         return redirect(url_for('user.show_feed'))
-    breakpoint()
+
     result = gateway.transaction.sale({
         "amount": amount,
         'payment_method_nonce': nonce,
@@ -52,7 +53,7 @@ def create(image_id):
             "submit_for_settlement": True
         }
     })
-    breakpoint()
+
     if not result.is_success:
         flash('Unable to complete transaction', 'warning')
         return redirect(url_for('users.show_feed'))

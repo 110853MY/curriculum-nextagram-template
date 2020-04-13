@@ -1,6 +1,5 @@
-import os
 import braintree
-
+import os
 
 gateway = braintree.BraintreeGateway(
     braintree.Configuration(

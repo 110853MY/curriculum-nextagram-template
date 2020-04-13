@@ -1,7 +1,7 @@
 from models.base_model import BaseModel
 from flask_login import UserMixin
 import peewee as pw
-from playhouse.hybrid import hybrid_property
+from playhouse.hybrid import hybrid_property, hybrid_method
 from werkzeug.security import generate_password_hash
 
 
@@ -14,6 +14,26 @@ class User(UserMixin, BaseModel):
     @hybrid_property
     def profile_image_url(self):
         return f"https://110853my-nextagram.s3.amazonaws.com/{self.profile_image}"
+
+    @hybrid_property
+    def followers(self):
+        from models.follower_following import FollowerFollowing
+        return [user.idol for user in FollowerFollowing.select().where(FollowerFollowing.fans_id == self.id)]
+
+    @hybrid_property
+    def following(self):
+        from models.follower_following import FollowerFollowing
+        return [user.fan for user in FollowerFollowing.select().where(FollowerFollowing.idols_id == self.id)]
+
+    @hybrid_method
+    def is_following(self, user):
+        from models.follower_following import FollowerFollowing
+        return True if FollowerFollowing.get_or_none((FollowerFollowing.idols_id == user.id) & (FollowerFollowing.fans_id == self.id)) else False
+
+    @hybrid_method
+    def is_followed_by(self, user):
+        from models.follower_following import FollowerFollowing
+        return True if FollowerFollowing.get_or_none((FollowerFollowing.fans_id == user.id) & (FollowerFollowing.idols_id == self.id)) else False
 
         # def is_authenticated(self):
         #     return True

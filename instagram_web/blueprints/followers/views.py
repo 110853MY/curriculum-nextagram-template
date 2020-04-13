@@ -1,5 +1,6 @@
 from models.user import User
 from models.image import Image
+from models.follower_following import FollowerFollowing
 from flask_login import login_required, current_user
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
@@ -9,44 +10,40 @@ followers_blueprint = Blueprint('followers',
                                 template_folder='templates')
 
 
-@followers_blueprint.route('/<user_id>/new', methods=['GET'])
+@followers_blueprint.route('/<idols_id>', methods=['POST'])
 @login_required
-def new(user_id):
-    user = User.get_or_none(User.id == user_id)
+def create(idols_id):
 
-    return render_template('followers/new.html', user=user)
+    idol = User.get_or_none(User.id == idols_id)
 
-
-@followers_blueprint.route('/<user_id>/')
-@login_required
-def follow(user_id):
-    user = User.get_or_none(User.id == user_id)
-
-    if user is None:
-        flash('User{} not found', 'warning')
+    if not idol:
+        flash('No user found with this id!')
         return redirect(url_for('users.show_feed'))
 
-    if user == current_user:
-        flash('You cannot follow yourself')
-        return redirect(url_for('users.show', username=user.username))
-        current_user.follow(user)
+    new_follow = FollowerFollowing(
+        fans_id=current_user.id,
+        idols_id=idol.id
+    )
 
-    db.session.commit()
-    flash('You are following {}!'.format(username))
-    return redirect(url_for('user', username=username))
+    if not new_follow.save():
+        flash('Unable to follow this user!')
+        return render_template('followers/new.html', user=idols_id)
+
+    else:
+        flash(f'You are now following {idol.username}')
+        return redirect(url_for('users.show_feed', username=idol.username))
+
+    flash('Follow request send! Please wait for approval!')
+    return redirect(url_for('users.show_feed', username=idol.username))
 
 
-@followers_blueprint.route('/unfollow/<username>')
+@followers_blueprint.route('/<idol_id>/delete', methods=['POST'])
 @login_required
-def unfollow(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        flash('User {} not found.'.format(username))
-        return redirect(url_for('index'))
-    if user == current_user:
-        flash('You cannot unfollow yourself!')
-        return redirect(url_for('user', username=username))
-    current_user.unfollow(user)
-    db.session.commit()
-    flash('You are not following {}.'.format(username))
-    return redirect(url_for('user', username=username))
+def delete(idol_id):
+
+    follow = FollowerFollowing.get_or_none((FollowerFollowing.idols_id == idols_id) and (
+        FollowerFollowing.fan_id == current_user.id))
+
+    if follow.delete_instance():
+        flash(f'You have unfollowed{follow.idol.username}')
+        return redirect(url_for('users.show_feed', username=follow.idol.username))
